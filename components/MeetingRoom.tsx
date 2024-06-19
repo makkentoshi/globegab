@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import {
+  CallControls,
   CallParticipantsList,
   PaginatedGridLayout,
   SpeakerLayout,
@@ -9,7 +10,7 @@ import React, { useState } from "react";
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
-  const [layout, setLayout] = useState("speaker-left");
+  const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
 
   const [showParticipants, setShowParticipants] = useState(false);
 
@@ -32,14 +33,19 @@ const MeetingRoom = () => {
           <CallLayout></CallLayout>
         </div>
         <div
-          className={cn("h-[calc(100vh-86px)] ml-2 hidden", {
+          className={cn("h-[calc(100vh-86px)] ml-2 hidden", 
+            {
             "show-block": showParticipants,
-          })}
+          }
+        )}
         >
           <CallParticipantsList
             onClose={() => setShowParticipants(false)}
           ></CallParticipantsList>
         </div>
+      </div>
+      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
+        <CallControls></CallControls>
       </div>
     </section>
   );
