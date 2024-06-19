@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import HomeCard from "./HomeCard";
 import { useRouter } from "next/navigation";
 
-
-
 const MeetingTypeList = () => {
   const router = useRouter();
   const [meetingState, setMeetingState] = useState<
@@ -14,7 +12,7 @@ const MeetingTypeList = () => {
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
       <HomeCard
-        img="/icons/add-meeeting.svg"
+        img="/icons/add-meeting.svg"
         title="New Meeting"
         description="Start a new meeting"
         handleClick={() => setMeetingState("isJoiningMeeting")}
@@ -25,21 +23,21 @@ const MeetingTypeList = () => {
         title="Schedule Meeting"
         description="Plan your meeting"
         handleClick={() => setMeetingState("isScheduleMeeting")}
-            className="bg-blue-1"
+        className="bg-blue-1"
       ></HomeCard>
       <HomeCard
         img="/icons/recordings.svg"
         title="View Recordings"
         description="Check your recordings"
-        handleClick={() => setMeetingState("isJoiningMeeting")}
-            className="bg-purple-1"
+        handleClick={() => router.push("/recordings")}
+        className="bg-purple-1"
       ></HomeCard>
       <HomeCard
-        img="/icons/add-meeeting.svg"
-        title="New Meeting"
-        description="Start a new meeting"
-        handleClick={() => router.push("/recordings")}
-            className="bg-yellow-1"
+        img="/icons/join-meeting.svg"
+        title="Join Meeting"
+        description="via invitation link"
+        handleClick={() => setMeetingState("isJoiningMeeting")}
+        className="bg-yellow-1"
       ></HomeCard>
     </section>
   );
