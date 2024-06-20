@@ -15,12 +15,14 @@ import { Button } from "./ui/button";
 interface MeetingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  handleClick?: () => void;
   title: string;
   className?: string;
   children?: ReactNode;
-  image?: string;
+  handleClick?: () => void;
   buttonText?: string;
+  instantMeeting?: boolean;
+  image?: string;
+  buttonClassName?: string;
   buttonIcon?: string;
 }
 
@@ -28,11 +30,13 @@ const MeetingModal = ({
   isOpen,
   onClose,
   title,
-  children,
   className,
+  children,
   handleClick,
   buttonText,
+  instantMeeting,
   image,
+  buttonClassName,
   buttonIcon,
 }: MeetingModalProps) => {
   return (
@@ -52,8 +56,14 @@ const MeetingModal = ({
             onClick={handleClick}
           >
             {buttonIcon && (
-                <Image src ={buttonIcon} alt="button icon" width={13} height={13}></Image>
-            )} &nbsp;
+              <Image
+                src={buttonIcon}
+                alt="button icon"
+                width={13}
+                height={13}
+              ></Image>
+            )}{" "}
+            &nbsp;
             {buttonText || "Schedule Meeting"}
           </Button>
         </div>
