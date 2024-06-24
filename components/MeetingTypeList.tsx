@@ -1,4 +1,5 @@
 "use client";
+// FIXED
 import Image from "next/image";
 import React, { useState } from "react";
 import HomeCard from "./HomeCard";
@@ -19,10 +20,9 @@ const initialValues = {
 const MeetingTypeList = () => {
   const router = useRouter();
   const [meetingState, setMeetingState] = useState<
-    "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting" | undefined
-  >();
+  'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined
+>(undefined);
   const [values, setValues] = useState(initialValues);
-
   const [callDetails, setCallDetails] = useState<Call>();
   const client = useStreamVideoClient();
   const { toast } = useToast();

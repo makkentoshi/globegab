@@ -16,20 +16,19 @@ const Navbar = () => {
           className="max-sm:size-10"
         ></Image>
         <p className="text-[26px] font-extrabold text-white max-sm:hidden">
-          Yoom
+          GlobeGab
         </p>
       </Link>
 
       <div className="flex-between gap-5">
         <SignedIn>
-          <UserButton></UserButton>
+          <UserButton afterSignOutUrl="/sign-in" />
         </SignedIn>
-     
 
         <MobileNav></MobileNav>
       </div>
     </nav>
   );
 };
-
+// FIXED
 export default Navbar;

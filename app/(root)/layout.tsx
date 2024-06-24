@@ -11,3 +11,4 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
 };
 
 export default RootLayout;
+// FIXED
