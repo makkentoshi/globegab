@@ -42,18 +42,10 @@ const MeetingSetup = ({
   const { hasBrowserPermission } = useCameraState();
 
   const settings = useCallSettings();
-  console.log(settings?.video.camera_default_on);
 
-
-  if (hasBrowserPermission) {
-    console.log('User has granted camera permissions!');
-  } else {
-    console.log('User has denied or not granted camera permissions!');
-  }
-  
 
   const { camera, selectedDevice, devices, mediaStream } = useCameraState();
-  const preferredDevice = devices.find((d) => d.label === 'My Camera');
+
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-white gap-3">

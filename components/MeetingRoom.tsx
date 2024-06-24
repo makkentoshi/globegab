@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import {
@@ -9,40 +8,44 @@ import {
   PaginatedGridLayout,
   SpeakerLayout,
   useCallStateHooks,
-  useCall
+  useCall,
+  ParticipantView,
 } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Users, LayoutList } from "lucide-react";
 
-type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
-  const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
+  const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
+  const { useCallCallingState } = useCallStateHooks();
+  const callingState = useCallCallingState();
 
   const router = useRouter();
   const call = useCall();
 
-  const MyParticipantList = () => {
+  const MyCallUI = () => {
     const { useParticipants } = useCallStateHooks();
     const participants = useParticipants();
     return (
       <>
-        <h2>Participants</h2>
-        {participants.map((participant) => (
-          <div key={participant.sessionId}>
-            <Image
-              src={participant.image}
-              alt={`Profile picture of ${participant.name}.`}
-            />
-            <span>{participant.name}</span>
-          </div>
+        {participants.map((p) => (
+          <ParticipantView participant={p} key={p.sessionId} />
         ))}
       </>
     );
   };
-
- 
 
   useEffect(() => {
     if (!call) {
@@ -51,20 +54,18 @@ const MeetingRoom = () => {
   }, [call, router]);
 
   const CallLayout = () => {
-    switch (layout) {
-      case "grid":
-        return <PaginatedGridLayout />;
-      case "speaker-right":
-        return <SpeakerLayout participantsBarPosition="left" />;
-      default:
-        return <SpeakerLayout participantsBarPosition="right" />;
+    if (layout === "grid") {
+      return <PaginatedGridLayout />;
+    } else if (layout === "speaker-right") {
+      return <SpeakerLayout participantsBarPosition="left" />;
+    } else {
+      return <SpeakerLayout participantsBarPosition="right" />;
     }
   };
-
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
       <div className="relative flex size-full items-center justify-center">
-        <div className="flex size-full max-w-[1000px] items-center">
+        <div className=" flex size-full max-w-[1000px] items-center">
           <CallLayout />
         </div>
         <div
@@ -77,6 +78,19 @@ const MeetingRoom = () => {
       </div>
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
         <CallControls onLeave={() => router.push(`/`)} />
+        <DropdownMenu>
+          <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
+            <LayoutList size={20} className="text-white" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuItem>Subscription</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </section>
   );
