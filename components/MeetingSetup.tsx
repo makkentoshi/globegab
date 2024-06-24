@@ -7,6 +7,7 @@ import {
 } from "@stream-io/video-react-sdk";
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { useCallStateHooks } from "@stream-io/video-react-sdk";
 
 const MeetingSetup = ({
   setIsSetupComplete,
@@ -35,6 +36,25 @@ const MeetingSetup = ({
       call?.camera.enable();
     }
   }, [isMicToggledOn, isCamToggledOn, call?.camera, call?.microphone]);
+
+  const { useCallSettings } = useCallStateHooks();
+  const { useCameraState } = useCallStateHooks();
+  const { hasBrowserPermission } = useCameraState();
+
+  const settings = useCallSettings();
+  console.log(settings?.video.camera_default_on);
+
+
+  if (hasBrowserPermission) {
+    console.log('User has granted camera permissions!');
+  } else {
+    console.log('User has denied or not granted camera permissions!');
+  }
+  
+
+  const { camera, selectedDevice, devices, mediaStream } = useCameraState();
+  const preferredDevice = devices.find((d) => d.label === 'My Camera');
+
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center text-white gap-3">
       <h1 className="text-2xl font-bold">Setup</h1>
@@ -52,9 +72,8 @@ const MeetingSetup = ({
             type="checkbox"
             checked={isCamToggledOn}
             onChange={(e) => setIsCamToggledOn(e.target.checked)}
-          >
-            Camera
-          </input>
+          ></input>
+          Camera
         </label>
 
         <DeviceSettings></DeviceSettings>
