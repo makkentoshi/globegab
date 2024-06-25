@@ -24,6 +24,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ParticipantsDebug from "./ParticipantDebug";
+import CustomParticipantsList from "./CustomParticipantsList";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
@@ -32,13 +34,12 @@ const MeetingRoom = () => {
   const [showParticipants, setShowParticipants] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
-
+  const { useParticipants } = useCallStateHooks();
+  const participants = useParticipants();
   const router = useRouter();
   const call = useCall();
 
   const MyCallUI = () => {
-    const { useParticipants } = useCallStateHooks();
-    const participants = useParticipants();
     return (
       <>
         {participants.map((p) => (
@@ -46,6 +47,14 @@ const MeetingRoom = () => {
         ))}
       </>
     );
+  };
+
+  const CustomParticipantsList = () => {
+    const participants = useParticipants();
+
+    if (!participants || participants.length === 0) {
+      return <div>No participants</div>;
+    }
   };
 
   useEffect(() => {
@@ -63,11 +72,13 @@ const MeetingRoom = () => {
       return <SpeakerLayout participantsBarPosition="right" />;
     }
   };
+  
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
       <div className="relative flex size-full items-center justify-center">
         <div className=" flex size-full max-w-[1000px] items-center">
-          <CallLayout />
+          <CustomParticipantsList />
+          <ParticipantsDebug></ParticipantsDebug>
         </div>
         <div
           className={cn("h-[calc(100vh-86px)] hidden ml-2", {
