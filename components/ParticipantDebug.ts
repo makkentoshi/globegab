@@ -7,7 +7,7 @@ const ParticipantsDebug = () => {
   const participants = useParticipants();
 
   useEffect(() => {
-    console.log("Participants:", participants);
+    console.log("Participants:", participants, );
   }, [participants]);
 
   return null;

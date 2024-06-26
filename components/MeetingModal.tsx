@@ -1,6 +1,5 @@
 "use client";
-// FIXED
-
+//fixed
 import { ReactNode } from "react";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { cn } from "@/lib/utils";

@@ -1,52 +1,47 @@
 "use client";
-// FIXED
-
+//fixed
+import { useEffect, useState } from "react";
 import {
   DeviceSettings,
   VideoPreview,
   useCall,
+  useCallStateHooks,
 } from "@stream-io/video-react-sdk";
-import React, { useEffect, useState } from "react";
+
 import { Button } from "./ui/button";
-import { useCallStateHooks } from "@stream-io/video-react-sdk";
 
 const MeetingSetup = ({
   setIsSetupComplete,
 }: {
   setIsSetupComplete: (value: boolean) => void;
 }) => {
-  const [isMicToggledOn, setIsMicToggledOn] = useState(false);
-  const [isCamToggledOn, setIsCamToggledOn] = useState(false);
+  // https://getstream.io/video/docs/react/guides/call-and-participant-state/#call-state
+  const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
+  const callStartsAt = useCallStartsAt();
+  const callEndedAt = useCallEndedAt();
+  const callTimeNotArrived =
+    callStartsAt && new Date(callStartsAt) > new Date();
+  const callHasEnded = !!callEndedAt;
 
   const call = useCall();
 
   if (!call) {
-    throw new Error("usecall must be used within StreamCall");
+    throw new Error(
+      "useStreamCall must be used within a StreamCall component."
+    );
   }
 
+  const [isMicCamToggled, setIsMicCamToggled] = useState(false);
+
   useEffect(() => {
-    if (isMicToggledOn) {
-      call?.microphone.disable();
+    if (isMicCamToggled) {
+      call.camera.disable();
+      call.microphone.disable();
     } else {
-      call?.microphone.enable();
+      call.camera.enable();
+      call.microphone.enable();
     }
-
-    if (isCamToggledOn) {
-      call?.camera.disable();
-    } else {
-      call?.camera.enable();
-    }
-  }, [isMicToggledOn, isCamToggledOn, call?.camera, call?.microphone]);
-
-  const { useCallSettings } = useCallStateHooks();
-  const { useCameraState } = useCallStateHooks();
-  const { hasBrowserPermission } = useCameraState();
-
-  const settings = useCallSettings();
-
-
-  const { camera, selectedDevice, devices, mediaStream } = useCameraState();
-
+  }, [isMicCamToggled, call.camera, call.microphone]);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
@@ -56,29 +51,22 @@ const MeetingSetup = ({
         <label className="flex items-center justify-center gap-2 font-medium">
           <input
             type="checkbox"
-            checked={isMicToggledOn}
-            onChange={(e) => setIsMicToggledOn(e.target.checked)}
-          ></input>
-          Microphone
-          <input
-            type="checkbox"
-            checked={isCamToggledOn}
-            onChange={(e) => setIsCamToggledOn(e.target.checked)}
-          ></input>
-          Camera
+            checked={isMicCamToggled}
+            onChange={(e) => setIsMicCamToggled(e.target.checked)}
+          />
+          Join with mic and camera off
         </label>
-
-        <DeviceSettings></DeviceSettings>
+        <DeviceSettings />
       </div>
       <Button
         className="rounded-md bg-green-500 px-4 py-2.5"
         onClick={() => {
-          call.join;
+          call.join();
 
           setIsSetupComplete(true);
         }}
       >
-        Join Meeting
+        Join meeting
       </Button>
     </div>
   );

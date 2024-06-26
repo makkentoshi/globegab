@@ -1,7 +1,5 @@
 "use client";
 
-// FIXED
-
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { StreamCall, StreamTheme } from "@stream-io/video-react-sdk";
@@ -9,7 +7,6 @@ import { useParams } from "next/navigation";
 import { Loader } from "lucide-react";
 
 import { useGetCallById } from "@/hooks/useGetCallById";
-
 import MeetingSetup from "@/components/MeetingSetup";
 import MeetingRoom from "@/components/MeetingRoom";
 
@@ -27,6 +24,7 @@ const MeetingPage = () => {
         Call Not Found
       </p>
     );
+
 
   const notAllowed =
     call.type === "invited" &&

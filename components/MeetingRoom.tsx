@@ -31,31 +31,13 @@ type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
   const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
-  const [showParticipants, setShowParticipants] = useState(false);
+  const [showParticipants, setShowParticipants] = useState(true);
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
   const { useParticipants } = useCallStateHooks();
   const participants = useParticipants();
   const router = useRouter();
   const call = useCall();
-
-  const MyCallUI = () => {
-    return (
-      <>
-        {participants.map((p) => (
-          <ParticipantView participant={p} key={p.sessionId} />
-        ))}
-      </>
-    );
-  };
-
-  const CustomParticipantsList = () => {
-    const participants = useParticipants();
-
-    if (!participants || participants.length === 0) {
-      return <div>No participants</div>;
-    }
-  };
 
   useEffect(() => {
     if (!call) {
@@ -72,12 +54,12 @@ const MeetingRoom = () => {
       return <SpeakerLayout participantsBarPosition="right" />;
     }
   };
-  
+
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4 text-white">
       <div className="relative flex size-full items-center justify-center">
         <div className=" flex size-full max-w-[1000px] items-center">
-          <CustomParticipantsList />
+          <CallLayout></CallLayout>
           <ParticipantsDebug></ParticipantsDebug>
         </div>
         <div
