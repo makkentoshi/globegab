@@ -11,6 +11,7 @@ import {
   useCallStateHooks,
   useCall,
   ParticipantView,
+  CallingState,
 } from "@stream-io/video-react-sdk";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
@@ -25,8 +26,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ParticipantsDebug from "./ParticipantDebug";
-import CustomParticipantsList from "./CustomParticipantsList";
 import EndCallButton from "./EndCallButton";
+import { off } from "process";
+import Loader from "./Loader";
 
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
@@ -35,18 +37,16 @@ const MeetingRoom = () => {
   const isPersonalRoom = !!searchParams.get("personal");
   const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
-  const { useCallCallingState } = useCallStateHooks();
-  const callingState = useCallCallingState();
-  const { useParticipants } = useCallStateHooks();
-  const participants = useParticipants();
+
   const router = useRouter();
   const call = useCall();
 
-  useEffect(() => {
-    if (!call) {
-      router.push(`/`);
-    }
-  }, [call, router]);
+  const { useParticipants } = useCallStateHooks();
+  const participants = useParticipants();
+  const { useCallCallingState } = useCallStateHooks();
+  const callingState = useCallCallingState();
+
+  if (callingState !== CallingState.JOINED) return <Loader></Loader>;
 
   const CallLayout = () => {
     if (layout === "grid") {
@@ -73,7 +73,7 @@ const MeetingRoom = () => {
           <CallParticipantsList onClose={() => setShowParticipants(false)} />
         </div>
       </div>
-      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
+      <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 flex-wrap">
         <CallControls onLeave={() => router.push(`/`)} />
         <DropdownMenu>
           <div className="flex items-center">
