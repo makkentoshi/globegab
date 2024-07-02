@@ -1,5 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { useGetCallById } from "@/hooks/useGetCallById";
 import { useUser } from "@clerk/nextjs";
+import { useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { useRouter } from "next/router";
 import React from "react";
 
 const Table = ({
@@ -21,13 +24,27 @@ const Table = ({
 
 const PersonalRoom = () => {
   const { isLoaded, user } = useUser();
-  const meetingId  = user?.id;
+  const meetingId = user?.id;
   const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${meetingId}?personal=true`;
 
-  const startRoom = async () => { 
+  const client = useStreamVideoClient();
+  const router = useRouter();
 
-  }
+  const { call } = useGetCallById(meetingId!);
 
+  const startRoom = async () => {
+    if (!client || !user) return;
+
+    if (!call) {
+      const newCall = client.call("default", meetingId!);
+      await newCall.getOrCreate({
+        data: {
+          starts_at: new Date().toISOString(),
+        },
+      });
+    }
+    router.push(`/meeting/${meetingId}?personal=true`);
+  };
 
   return (
     <section className="flex size-full flex-col gap-10 text-white">
@@ -37,22 +54,14 @@ const PersonalRoom = () => {
           title="Topic"
           description={`${user?.username}'s personal room`}
         />
-          <Table
-          title="Meeting Id"
-          description={`${meetingId!}`}
-        />
-          <Table
-          title="Invite Link"
-          description={`${meetingLink}`}
-        />
+        <Table title="Meeting Id" description={`${meetingId!}`} />
+        <Table title="Invite Link" description={`${meetingLink}`} />
       </div>
       <div className="flex gap-5">
         <Button className="bg-blue-1" onClick={startRoom}>
           Start Meeting
         </Button>
-        <Button className="bg-dark-3" onClick={() => {
-          
-        }}>
+        <Button className="bg-dark-3" onClick={() => {}}>
           Start Meeting
         </Button>
       </div>
